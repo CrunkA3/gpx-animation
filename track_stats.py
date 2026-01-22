@@ -188,11 +188,11 @@ if __name__ == "__main__":
     print(f"Höhenmeter: {stats['elevation_gain_m']:.0f} m")
     # Erstelle und speichere das Stats-Bild
     stats_img = create_stats_image(stats, (255, 255, 255, 255), (0, 0, 0, 128))  # Weiße Schrift
-    stats_img.save("stats_white.png")
+    stats_img.save("output/stats_white.png")
     stats_img = create_stats_image(stats, (0, 0, 0, 255), (255, 255, 255, 128))  # Schwarze Schrift
-    stats_img.save("stats_black.png")
+    stats_img.save("output/stats_black.png")
     stats_img = create_stats_image(stats, (252, 82, 0, 255), (207, 64, 23, 128))  # Orange Schrift
-    stats_img.save("stats_orange.png")
+    stats_img.save("output/stats_orange.png")
     print("Stats-Bilder gespeichert")
 
     print("Fertig!")
