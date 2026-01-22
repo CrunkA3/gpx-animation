@@ -1,6 +1,5 @@
 """
-Dieses Skript liest eine GPX-Datei ein, extrahiert die Trackpunkte und erstellt
-eine animierte GIF-Datei, die den Track mit einem Leuchteffekt darstellt.
+Erstellt Statistiken aus einer GPX-Datei und generiert ein Bild mit den Statistiken.
 """
 
 import io
