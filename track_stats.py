@@ -103,7 +103,7 @@ def create_stats_image(
             "y": row1_y + detail_offset,
             "text": dist_text,
             "font": font_large,
-            "shadow_font": font_large_bold,
+            "font_bold": font_large_bold,
         },
         {
             "x": col2_x,
@@ -117,7 +117,7 @@ def create_stats_image(
             "y": row1_y + detail_offset,
             "text": time_text,
             "font": font_large,
-            "shadow_font": font_large_bold,
+            "font_bold": font_large_bold,
         },
         {
             "x": col1_x,
@@ -131,7 +131,7 @@ def create_stats_image(
             "y": row2_y + detail_offset,
             "text": pace_text,
             "font": font_large,
-            "shadow_font": font_large_bold,
+            "font_bold": font_large_bold,
         },
         {
             "x": col2_x,
@@ -145,7 +145,7 @@ def create_stats_image(
             "y": row2_y + detail_offset,
             "text": elev_text,
             "font": font_large,
-            "shadow_font": font_large_bold,
+            "font_bold": font_large_bold,
         },
     ]
 
