@@ -12,6 +12,12 @@ import datetime
 
 # GPX-Datei parsen
 def parse_gpx(filename):
+    """
+    parsed eine GPX-Datei und extrahiert die Trackpunkte.
+    
+    :param filename:  GPX datei pfad
+    :return: Liste von Trackpunkten als Tupel (lat, lon, time, elevation)
+    """
     tree = ET.parse(filename)
     root = tree.getroot()
 
