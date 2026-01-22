@@ -70,6 +70,7 @@ def create_stats_image(
     row1_y = 40
     row2_y = 200
     shadow_offset = 0
+    detail_offset = 50
 
     # Calculate values
     total_seconds = stats["total_time_s"]
@@ -91,13 +92,13 @@ def create_stats_image(
     # Define elements to draw
     elements = [
         {"x": col1_x, "y": row1_y, "text": "Distanz", "font": font_small },
-        {"x": col1_x, "y": row1_y + 50, "text": dist_text, "font": font_large},
+        {"x": col1_x, "y": row1_y + detail_offset, "text": dist_text, "font": font_large},
         {"x": col2_x, "y": row1_y, "text": "Zeit", "font": font_small},
-        {"x": col2_x, "y": row1_y + 50, "text": time_text, "font": font_large},
+        {"x": col2_x, "y": row1_y + detail_offset, "text": time_text, "font": font_large},
         {"x": col1_x, "y": row2_y, "text": "Pace", "font": font_small},
-        {"x": col1_x, "y": row2_y + 50, "text": pace_text, "font": font_large},
+        {"x": col1_x, "y": row2_y + detail_offset, "text": pace_text, "font": font_large},
         {"x": col2_x, "y": row2_y, "text": "Höhenmeter", "font": font_small},
-        {"x": col2_x, "y": row2_y + 50, "text": elev_text, "font": font_large},
+        {"x": col2_x, "y": row2_y + detail_offset, "text": elev_text, "font": font_large},
     ]
 
     # Draw all shadows
