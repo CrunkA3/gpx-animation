@@ -120,7 +120,7 @@ def create_animation(
 
 # Hauptprogramm
 if __name__ == "__main__":
-    gpx_file = "21_31.gpx"
+    gpx_file = "gpx_files/22_31.gpx"
 
     print("Parse GPX-Datei...")
     track_points = parse_gpx(gpx_file)
