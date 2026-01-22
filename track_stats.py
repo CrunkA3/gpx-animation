@@ -154,7 +154,7 @@ def create_stats_image(
         shadow_draw.text(
             (elem["x"] + shadow_offset, elem["y"] + shadow_offset),
             elem["text"],
-            font=elem["font"],
+            font=elem["font_bold"],
             fill=shadow_color,
         )
 
