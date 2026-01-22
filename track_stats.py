@@ -2,12 +2,10 @@
 Erstellt Statistiken aus einer GPX-Datei und generiert ein Bild mit den Statistiken.
 """
 
-import io
-import numpy as np
-import xml.etree.ElementTree as ET
-import matplotlib.pyplot as plt
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import datetime
+import xml.etree.ElementTree as ET
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 
 # GPX-Datei parsen
