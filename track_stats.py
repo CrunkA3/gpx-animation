@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 def parse_gpx(filename):
     """
     parsed eine GPX-Datei und extrahiert die Trackpunkte.
-    
+
     :param filename:  GPX datei pfad
     :return: Liste von Trackpunkten als Tupel (lat, lon, time, elevation)
     """
@@ -58,6 +58,8 @@ def create_stats_image(
     try:
         font_small = ImageFont.truetype("C:\\Windows\\Fonts\\consola.ttf", 32)
         font_large = ImageFont.truetype("C:\\Windows\\Fonts\\consola.ttf", 48)
+        font_small_bold = ImageFont.truetype("C:\\Windows\\Fonts\\consolab.ttf", 32)
+        font_large_bold = ImageFont.truetype("C:\\Windows\\Fonts\\consolab.ttf", 48)
     except:
         font_small = ImageFont.load_default()
         font_large = ImageFont.load_default()
@@ -89,14 +91,62 @@ def create_stats_image(
 
     # Define elements to draw
     elements = [
-        {"x": col1_x, "y": row1_y, "text": "Distanz", "font": font_small },
-        {"x": col1_x, "y": row1_y + detail_offset, "text": dist_text, "font": font_large},
-        {"x": col2_x, "y": row1_y, "text": "Zeit", "font": font_small},
-        {"x": col2_x, "y": row1_y + detail_offset, "text": time_text, "font": font_large},
-        {"x": col1_x, "y": row2_y, "text": "Pace", "font": font_small},
-        {"x": col1_x, "y": row2_y + detail_offset, "text": pace_text, "font": font_large},
-        {"x": col2_x, "y": row2_y, "text": "Höhenmeter", "font": font_small},
-        {"x": col2_x, "y": row2_y + detail_offset, "text": elev_text, "font": font_large},
+        {
+            "x": col1_x,
+            "y": row1_y,
+            "text": "Distanz",
+            "font": font_small,
+            "font_bold": font_small_bold,
+        },
+        {
+            "x": col1_x,
+            "y": row1_y + detail_offset,
+            "text": dist_text,
+            "font": font_large,
+            "shadow_font": font_large_bold,
+        },
+        {
+            "x": col2_x,
+            "y": row1_y,
+            "text": "Zeit",
+            "font": font_small,
+            "font_bold": font_small_bold,
+        },
+        {
+            "x": col2_x,
+            "y": row1_y + detail_offset,
+            "text": time_text,
+            "font": font_large,
+            "shadow_font": font_large_bold,
+        },
+        {
+            "x": col1_x,
+            "y": row2_y,
+            "text": "Pace",
+            "font": font_small,
+            "font_bold": font_small_bold,
+        },
+        {
+            "x": col1_x,
+            "y": row2_y + detail_offset,
+            "text": pace_text,
+            "font": font_large,
+            "shadow_font": font_large_bold,
+        },
+        {
+            "x": col2_x,
+            "y": row2_y,
+            "text": "Höhenmeter",
+            "font": font_small,
+            "font_bold": font_small_bold,
+        },
+        {
+            "x": col2_x,
+            "y": row2_y + detail_offset,
+            "text": elev_text,
+            "font": font_large,
+            "shadow_font": font_large_bold,
+        },
     ]
 
     # Draw all shadows
