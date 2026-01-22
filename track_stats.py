@@ -4,6 +4,7 @@ eine animierte GIF-Datei, die den Track mit einem Leuchteffekt darstellt.
 """
 
 import io
+import numpy as np
 import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -39,88 +40,89 @@ def parse_gpx(filename):
     return points
 
 
-def create_stats_image(stats, font_color=(255, 255, 255, 255), shadow_color=(0, 0, 0, 128)):
+def create_stats_image(
+    stats, font_color=(255, 255, 255, 255), shadow_color=(0, 0, 0, 128)
+):
     """Erstellt ein Bild mit den Statistiken in einem 2x2 Grid mit geblurten Drop-Shadow."""
-    width, height = 400, 200
-    img = Image.new('RGBA', (width, height), (0, 0, 0, 0))  # Transparent background
+    width, height = 800, 400
+    img = Image.new("RGBA", (width, height), (0, 0, 0, 0))  # Transparent background
     draw = ImageDraw.Draw(img)
-    
+
     # Create shadow image
-    shadow_img = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    shadow_img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     shadow_draw = ImageDraw.Draw(shadow_img)
-    
+
     try:
-        font_small = ImageFont.truetype("C:\\Windows\\Fonts\\consola.ttf", 16)
-        font_large = ImageFont.truetype("C:\\Windows\\Fonts\\consola.ttf", 32)
+        font_small = ImageFont.truetype("C:\\Windows\\Fonts\\consola.ttf", 32)
+        font_large = ImageFont.truetype("C:\\Windows\\Fonts\\consola.ttf", 48)
     except:
         font_small = ImageFont.load_default()
         font_large = ImageFont.load_default()
-    
+
     # Positions
-    col1_x = 20
-    col2_x = 220
-    row1_y = 20
-    row2_y = 100
-    
+    col1_x = 40
+    col2_x = 440
+    row1_y = 40
+    row2_y = 200
+    shadow_offset = 0
+
     # Calculate values
-    total_seconds = stats['total_time_s']
+    total_seconds = stats["total_time_s"]
     hours = int(total_seconds // 3600)
     minutes = int((total_seconds % 3600) // 60)
-    seconds = int(total_seconds % 60)
-    
-    if stats['pace_s_per_km'] is not None:
-        pace_min = int(stats['pace_s_per_km'] // 60)
-        pace_sec = int(stats['pace_s_per_km'] % 60)
-    
-    # Draw shadows on shadow image (offset by 0 pixels)
-    shadow_offset = 0
-    shadow_draw.text((col1_x + shadow_offset, row1_y + shadow_offset), "Distanz", font=font_small, fill=shadow_color)
+
+    pace_min = int(stats["pace_s_per_km"] // 60)
+    pace_sec = int(stats["pace_s_per_km"] % 60)
+
     dist_text = f"{stats['total_distance_m'] / 1000:.2f} km"
-    shadow_draw.text((col1_x + shadow_offset, row1_y + 25 + shadow_offset), dist_text, font=font_large, fill=shadow_color)
-    
-    shadow_draw.text((col2_x + shadow_offset, row1_y + shadow_offset), "Zeit", font=font_small, fill=shadow_color)
-    time_text = f"{hours}:{minutes:02d}:{seconds:02d}"
-    shadow_draw.text((col2_x + shadow_offset, row1_y + 25 + shadow_offset), time_text, font=font_large, fill=shadow_color)
-
-    shadow_draw.text((col1_x + shadow_offset, row2_y + shadow_offset), "Pace", font=font_small, fill=shadow_color)
-    if stats['pace_s_per_km'] is not None:
-        pace_text = f"{pace_min}:{pace_sec:02d} /km"
-    else:
-        pace_text = "N/A"
-    shadow_draw.text((col1_x + shadow_offset, row2_y + 25 + shadow_offset), pace_text, font=font_large, fill=shadow_color)
-
-    shadow_draw.text((col2_x + shadow_offset, row2_y + shadow_offset), "Höhenmeter", font=font_small, fill=shadow_color)
+    time_text = f"{hours}:{minutes:02d} h"
+    pace_text = (
+        f"{pace_min}:{pace_sec:02d} /km"
+        if stats["pace_s_per_km"] is not None
+        else "N/A"
+    )
     elev_text = f"{stats['elevation_gain_m']:.0f} m"
-    shadow_draw.text((col2_x + shadow_offset, row2_y + 25 + shadow_offset), elev_text, font=font_large, fill=shadow_color)
-    
+
+    # Define elements to draw
+    elements = [
+        {"x": col1_x, "y": row1_y, "text": "Distanz", "font": font_small },
+        {"x": col1_x, "y": row1_y + 50, "text": dist_text, "font": font_large},
+        {"x": col2_x, "y": row1_y, "text": "Zeit", "font": font_small},
+        {"x": col2_x, "y": row1_y + 50, "text": time_text, "font": font_large},
+        {"x": col1_x, "y": row2_y, "text": "Pace", "font": font_small},
+        {"x": col1_x, "y": row2_y + 50, "text": pace_text, "font": font_large},
+        {"x": col2_x, "y": row2_y, "text": "Höhenmeter", "font": font_small},
+        {"x": col2_x, "y": row2_y + 50, "text": elev_text, "font": font_large},
+    ]
+
+    # Draw all shadows
+    for elem in elements:
+        shadow_draw.text(
+            (elem["x"] + shadow_offset, elem["y"] + shadow_offset),
+            elem["text"],
+            font=elem["font"],
+            fill=shadow_color,
+        )
+
     # Blur the shadow
-    shadow_img = shadow_img.filter(ImageFilter.GaussianBlur(2))
-    
+    shadow_img = shadow_img.filter(ImageFilter.GaussianBlur(4))
+
     # Composite shadow onto main image
     img = Image.alpha_composite(img, shadow_img)
-    
+
     # Recreate draw object after compositing
     draw = ImageDraw.Draw(img)
-    
-    # Draw main text
-    draw.text((col1_x, row1_y), "Distanz", font=font_small, fill=font_color)
-    draw.text((col1_x, row1_y + 25), dist_text, font=font_large, fill=font_color)
-    
-    draw.text((col2_x, row1_y), "Zeit", font=font_small, fill=font_color)
-    draw.text((col2_x, row1_y + 25), time_text, font=font_large, fill=font_color)
-    
-    draw.text((col1_x, row2_y), "Pace", font=font_small, fill=font_color)
-    draw.text((col1_x, row2_y + 25), pace_text, font=font_large, fill=font_color)
-    
-    draw.text((col2_x, row2_y), "Höhenmeter", font=font_small, fill=font_color)
-    draw.text((col2_x, row2_y + 25), elev_text, font=font_large, fill=font_color)
-    
+
+    # Draw all main text
+    for elem in elements:
+        draw.text(
+            (elem["x"], elem["y"]), elem["text"], font=elem["font"], fill=font_color
+        )
     return img
 
 
 def calculate_track_stats(points):
     """Berechnet Statistiken für die gegebenen Trackpunkte."""
-    import numpy as np
 
     lats = np.array([p[0] for p in points])
     lons = np.array([p[1] for p in points])
@@ -145,7 +147,7 @@ def calculate_track_stats(points):
 
         distance = R * c
         total_distance += distance
-        
+
         # Calculate elevation gain with threshold to filter noise
         if points[i][3] is not None and points[i - 1][3] is not None:
             delta = points[i][3] - points[i - 1][3]
@@ -164,7 +166,7 @@ def calculate_track_stats(points):
         "elevation_gain_m": elevation_gain,
         "pace_s_per_km": (total_time / (total_distance / 1000))
         if total_distance > 0
-        else None
+        else None,
     }
 
 
@@ -178,20 +180,28 @@ if __name__ == "__main__":
 
     stats = calculate_track_stats(track_points)
     print(f"Gesamtdistanz: {stats['total_distance_m'] / 1000:.2f} km")
-    print(f"Gesamtzeit: {int(stats['total_time_s'] // 3600)}:{int((stats['total_time_s'] % 3600) // 60):02d}:{int(stats['total_time_s'] % 60):02d}")
-    if stats['pace_s_per_km'] is not None:
-        pace_min = int(stats['pace_s_per_km'] // 60)
-        pace_sec = int(stats['pace_s_per_km'] % 60)
+    print(
+        f"Gesamtzeit: {int(stats['total_time_s'] // 3600)}:{int((stats['total_time_s'] % 3600) // 60):02d}:{int(stats['total_time_s'] % 60):02d}"
+    )
+    if stats["pace_s_per_km"] is not None:
+        pace_min = int(stats["pace_s_per_km"] // 60)
+        pace_sec = int(stats["pace_s_per_km"] % 60)
         print(f"Pace: {pace_min}:{pace_sec:02d} min/km")
     else:
         print("Pace: N/A")
     print(f"Höhenmeter: {stats['elevation_gain_m']:.0f} m")
     # Erstelle und speichere das Stats-Bild
-    stats_img = create_stats_image(stats, (255, 255, 255, 255), (0, 0, 0, 128))  # Weiße Schrift
+    stats_img = create_stats_image(
+        stats, (255, 255, 255, 255), (0, 0, 0, 128)
+    )  # Weiße Schrift
     stats_img.save("output/stats_white.png")
-    stats_img = create_stats_image(stats, (0, 0, 0, 255), (255, 255, 255, 128))  # Schwarze Schrift
+    stats_img = create_stats_image(
+        stats, (0, 0, 0, 255), (255, 255, 255, 128)
+    )  # Schwarze Schrift
     stats_img.save("output/stats_black.png")
-    stats_img = create_stats_image(stats, (252, 82, 0, 255), (207, 64, 23, 128))  # Orange Schrift
+    stats_img = create_stats_image(
+        stats, (252, 82, 0, 255), (207, 64, 23, 128)
+    )  # Orange Schrift
     stats_img.save("output/stats_orange.png")
     print("Stats-Bilder gespeichert")
 
