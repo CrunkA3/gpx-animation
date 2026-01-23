@@ -1,4 +1,3 @@
-
 """
 Erstellt Statistiken aus einer GPX-Datei und generiert ein Bild mit den Statistiken.
 """
