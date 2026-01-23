@@ -40,4 +40,5 @@ cython_debug/
 # GPX Animationsspezifisch
 *.gpx
 output/*.png
+output/*.mp4
 /track_animation.gif
