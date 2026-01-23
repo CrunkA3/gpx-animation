@@ -3,15 +3,10 @@ Dieses Skript liest eine GPX-Datei ein, extrahiert die Trackpunkte und erstellt
 eine animierte GIF-Datei, die den Track mit einem Leuchteffekt darstellt.
 """
 
-
 import io
-import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
 from PIL import Image
 from gpx_utils import parse_gpx
-
-
-
 
 
 # Animation erstellen
@@ -21,7 +16,7 @@ def create_animation(
     duration=5,
     frame_skip=1,
     line_color="b",
-    line_width=2
+    line_width=2,
 ):
     fig, ax = plt.subplots(figsize=(24, 20))
     fig.patch.set_alpha(0)  # Transparenter Figure-Hintergrund
@@ -121,7 +116,7 @@ if __name__ == "__main__":
         duration=5,
         frame_skip=frame_skip,
         line_color="#FC4C02",
-        line_width=4
+        line_width=4,
     )
 
     print("Fertig!")
