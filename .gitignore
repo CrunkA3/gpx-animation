@@ -1,4 +1,43 @@
+# Byte-kompilierte Dateien
+__pycache__/
+*.py[cod]
+*$py.class
+# Distribution / Packaging
+Python
+build/
+dist/
+*.egg-info/
+eggs/
+# Virtuelle Umgebungen
+env
+venv/
+env/
+venv/
+# Jupyter Notebook
+ipynb_checkpoints
+# Test- und Coverage-Berichte
+tox/
+nox/
+coverage
+pytest_cache/
+# IDE-spezifische Dateien
+idea/
+vscode/
+# Logs und temporäre Dateien
+*.log
+*.tmp
+# Django spezifisch
+db.sqlite3
+db.sqlite3-journal
+# Flask spezifisch
+instance/
+webassets-cache
+# Sphinx Dokumentation
+docs/_build/
+# Cython Debug-Symbole
+cython_debug/
+
+# GPX Animationsspezifisch
 *.gpx
 output/*.png
-/last_frame.png
 /track_animation.gif
