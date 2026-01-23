@@ -18,6 +18,9 @@ def create_animation(
     line_color="b",
     line_width=2,
 ):
+    """Erstellt eine animierte GIF-Datei aus den Trackpunkten mit einem Leuchteffekt."""
+
+    # Matplotlib Figure und Axes einrichten
     fig, ax = plt.subplots(figsize=(24, 20))
     fig.patch.set_alpha(0)  # Transparenter Figure-Hintergrund
     ax.patch.set_alpha(0)  # Transparenter Axes-Hintergrund
