@@ -88,7 +88,7 @@ class GPXTrackAnimator:
         initial_frames = int(self.duration * self.fps)
 
         # Set up figure and axis
-        fig, ax = plt.subplots(figsize=(14, 14), dpi=100)
+        fig, ax = plt.subplots(figsize=(28, 28), dpi=100)
 
         # Compute bounding box for all tracks
         all_lats = np.concatenate([[p[0] for p in track] for track in self.tracks])
@@ -122,7 +122,7 @@ class GPXTrackAnimator:
         # Video writer
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")
         video_writer = cv2.VideoWriter(
-            self.output_video, fourcc, self.fps, (1400, 1400)
+            self.output_video, fourcc, self.fps, (2800, 2800)
         )
 
         # Animation: move start points to center and distribute on x-axis
@@ -185,6 +185,7 @@ class GPXTrackAnimator:
 
 
 
+
         # Einblend-Animation: Tracks erscheinen nacheinander in den ersten 3 Sekunden
         fadein_frames = int(self.fps * 3)
         for frame in range(fadein_frames):
@@ -198,13 +199,19 @@ class GPXTrackAnimator:
                 lats = [p[0] for p in track]
                 lons = [p[1] for p in track]
                 ax.plot(lons, lats, color=orange_bgr, linewidth=2)
-                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=10)
+                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=5)
+
+            # Zeige den aktuellen Index als Text, wenn ein neuer Track erscheint
+            if num_visible > 0:
+                ax.text(0.01, 0.98, f"Tag {num_visible}", transform=ax.transAxes, fontsize=28, color="black", va="top", ha="left", bbox=dict(facecolor='white', alpha=0.7, edgecolor='none', boxstyle='round,pad=0.3'))
+
+
             ax.axis("off")
             fig.canvas.draw()
             img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
             img = img.reshape(fig.canvas.get_width_height()[::-1] + (4,))
             img_rgb = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
-            video_writer.write(cv2.resize(img_rgb, (1400, 1400)))
+            video_writer.write(cv2.resize(img_rgb, (2800, 2800)))
 
         # Animation: Trackpunkte langsam auf Linie bringen
         for step in range(straighten_steps):
@@ -219,23 +226,23 @@ class GPXTrackAnimator:
                 lons = [(1-alpha)*p[1] + alpha*x_targets[i] for p in track]
                 ax.plot(lons, lats, color=orange_bgr, linewidth=2)
                 # Startmarker
-                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=10)
+                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=5)
             ax.axis("off")
             fig.canvas.draw()
             img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
             img = img.reshape(fig.canvas.get_width_height()[::-1] + (4,))
             img_rgb = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
-            video_writer.write(cv2.resize(img_rgb, (1400, 1400)))
+            video_writer.write(cv2.resize(img_rgb, (2800, 2800)))
 
         # Letztes Bild für 3 Sekunden halten
         fig.canvas.draw()
         img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
         img = img.reshape(fig.canvas.get_width_height()[::-1] + (4,))
         img_rgb = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
-        video_writer.write(cv2.resize(img_rgb, (1400, 1400)))
+        video_writer.write(cv2.resize(img_rgb, (2800, 2800)))
         hold_frames = int(self.fps * 3)
         for _ in range(hold_frames):
-            video_writer.write(cv2.resize(img_rgb, (1400, 1400)))
+            video_writer.write(cv2.resize(img_rgb, (2800, 2800)))
 
         video_writer.release()
         plt.close(fig)
