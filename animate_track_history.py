@@ -46,7 +46,7 @@ class GPXTrackAnimator:
             dlon = offset[1] - lons[0]
             lats = [lat + dlat for lat in lats]
             lons = [lon + dlon for lon in lons]
-        ax.plot(lons, lats, color=color, linewidth=2)
+        ax.plot(lons, lats, color=color, linewidth=4)
 
     def load_gpx_files(self):
         """Load all GPX files from the folder"""
@@ -55,7 +55,7 @@ class GPXTrackAnimator:
         gpx_files = sorted(glob.glob(os.path.join(self.gpx_folder, "*.gpx")), key=lambda x: Path(x).stem)
         tracks_and_names = []
         for gpx_file in gpx_files:
-            with open(gpx_file, "r") as f:
+            with open(gpx_file, "r", encoding="utf-8") as f:
                 gpx = gpxpy.parse(f)
                 track = []
                 for track_segment in gpx.tracks[0].segments:
@@ -84,11 +84,9 @@ class GPXTrackAnimator:
 
         # Animation parameters
         num_tracks = len(self.tracks)
-        total_frames = int((self.duration) * self.fps)
-        initial_frames = int(self.duration * self.fps)
 
         # Set up figure and axis
-        fig, ax = plt.subplots(figsize=(28, 28), dpi=100)
+        fig, ax = plt.subplots(figsize=(56, 56), dpi=100)
 
         # Compute bounding box for all tracks
         all_lats = np.concatenate([[p[0] for p in track] for track in self.tracks])
@@ -126,20 +124,13 @@ class GPXTrackAnimator:
         )
 
         # Animation: move start points to center and distribute on x-axis
-        center_lat = (min_lat + max_lat) / 2
         center_lon = (min_lon + max_lon) / 2
         x_spread = (max_lon - min_lon) * 0.8  # 80% of width
         x_targets = np.linspace(
             center_lon - x_spread / 2, center_lon + x_spread / 2, num_tracks
         )
-        y_target = center_lat
-        # Get original start positions (first point of each track)
-        orig_starts = np.array([[track[0][0], track[0][1]] for track in self.tracks])
-        target_starts = np.array([[y_target, x] for x in x_targets])
-        n_steps = int(self.fps * self.duration)  # Animation dauert volle duration
 
         # Orange in BGR für OpenCV: (2, 76, 252)
-        orange_rgb = "#FC4C02"
         orange_bgr = (2/255, 76/255, 252/255)  # Matplotlib erwartet Werte 0-1
         
 
@@ -198,12 +189,12 @@ class GPXTrackAnimator:
                 track = self.tracks[i]
                 lats = [p[0] for p in track]
                 lons = [p[1] for p in track]
-                ax.plot(lons, lats, color=orange_bgr, linewidth=2)
-                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=5)
+                ax.plot(lons, lats, color=orange_bgr, linewidth=4)
+                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=10)
 
             # Zeige den aktuellen Index als Text, wenn ein neuer Track erscheint
             if num_visible > 0:
-                ax.text(0.01, 0.98, f"Tag {num_visible}", transform=ax.transAxes, fontsize=28, color="black", va="top", ha="left", bbox=dict(facecolor='white', alpha=0.7, edgecolor='none', boxstyle='round,pad=0.3'))
+                ax.text(0.01, 0.98, f"Tag {num_visible}", transform=ax.transAxes, fontsize=72, color="black", va="top", ha="left", bbox=dict(facecolor='white', alpha=0.7, edgecolor='none', boxstyle='round,pad=0.3'))
 
 
             ax.axis("off")
@@ -211,6 +202,15 @@ class GPXTrackAnimator:
             img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
             img = img.reshape(fig.canvas.get_width_height()[::-1] + (4,))
             img_rgb = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
+            video_writer.write(cv2.resize(img_rgb, (2800, 2800)))
+
+        # Nach dem Einblenden 1 Sekunde Standbild halten
+        fig.canvas.draw()
+        img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
+        img = img.reshape(fig.canvas.get_width_height()[::-1] + (4,))
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
+        hold_frames_pause = int(self.fps * 1)
+        for _ in range(hold_frames_pause):
             video_writer.write(cv2.resize(img_rgb, (2800, 2800)))
 
         # Animation: Trackpunkte langsam auf Linie bringen
@@ -224,9 +224,9 @@ class GPXTrackAnimator:
                 # Interpolierte Positionen
                 lats = [(1-alpha)*p[0] + alpha*p[3] for p in track]
                 lons = [(1-alpha)*p[1] + alpha*x_targets[i] for p in track]
-                ax.plot(lons, lats, color=orange_bgr, linewidth=2)
+                ax.plot(lons, lats, color=orange_bgr, linewidth=4)
                 # Startmarker
-                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=5)
+                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=10)
             ax.axis("off")
             fig.canvas.draw()
             img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
