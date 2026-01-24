@@ -184,24 +184,26 @@ class GPXTrackAnimator:
             self.tracks[i] = [(*track[j][:2], dists[j], y_line[j]) for j in range(len(track))]
 
 
-        # Startbild: Tracks am Anfang (noch nicht begradigt)
-        ax.clear()
-        ax.set_xlim(min_lon, max_lon)
-        ax.set_ylim(min_lat, max_lat)
-        ax.set_aspect("equal")
-        for i, track in enumerate(self.tracks):
-            lats = [p[0] for p in track]
-            lons = [p[1] for p in track]
-            ax.plot(lons, lats, color=orange_bgr, linewidth=2)
-            ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=10)
-        ax.axis("off")
-        fig.canvas.draw()
-        img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
-        img = img.reshape(fig.canvas.get_width_height()[::-1] + (4,))
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
-        video_writer.write(cv2.resize(img_rgb, (1400, 1400)))
-        hold_frames_start = int(self.fps * 3)
-        for _ in range(hold_frames_start):
+
+        # Einblend-Animation: Tracks erscheinen nacheinander in den ersten 3 Sekunden
+        fadein_frames = int(self.fps * 3)
+        for frame in range(fadein_frames):
+            ax.clear()
+            ax.set_xlim(min_lon, max_lon)
+            ax.set_ylim(min_lat, max_lat)
+            ax.set_aspect("equal")
+            num_visible = int((frame + 1) * num_tracks / fadein_frames)
+            for i in range(num_visible):
+                track = self.tracks[i]
+                lats = [p[0] for p in track]
+                lons = [p[1] for p in track]
+                ax.plot(lons, lats, color=orange_bgr, linewidth=2)
+                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=10)
+            ax.axis("off")
+            fig.canvas.draw()
+            img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
+            img = img.reshape(fig.canvas.get_width_height()[::-1] + (4,))
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
             video_writer.write(cv2.resize(img_rgb, (1400, 1400)))
 
         # Animation: Trackpunkte langsam auf Linie bringen
