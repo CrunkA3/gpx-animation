@@ -46,7 +46,7 @@ def create_stats_image(
     pace_min = int(stats["pace_s_per_km"] // 60)
     pace_sec = int(stats["pace_s_per_km"] % 60)
 
-    dist_text = f"{stats['total_distance_m'] / 1000:.2f} km"
+    dist_text = f"{stats['total_distance_m'] / 1000:.1f} km"
     time_text = f"{hours}:{minutes:02d} h"
     pace_text = (
         f"{pace_min}:{pace_sec:02d} /km"
@@ -181,7 +181,7 @@ def calculate_track_stats(points):
         total_time = 0.0
 
     return {
-        "total_distance_m": total_distance,
+        "total_distance_m": round(total_distance, 1),
         "total_time_s": total_time,
         "elevation_gain_m": elevation_gain,
         "pace_s_per_km": (total_time / (total_distance / 1000))
@@ -192,7 +192,7 @@ def calculate_track_stats(points):
 
 # Hauptprogramm
 if __name__ == "__main__":
-    gpx_file = "gpx_files/22_31.gpx"
+    gpx_file = "gpx_files/24_31.gpx"
 
     print("Parse GPX-Datei...")
     track_points = parse_gpx(gpx_file)
