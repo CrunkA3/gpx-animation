@@ -220,11 +220,12 @@ class GPXTrackAnimator:
             ax.set_ylim(min_lat, max_lat)
             ax.set_aspect("equal")
             alpha = (step + 1) / straighten_steps
+            linewidth = 4 + 4 * alpha  # von 4 auf 8
             for i, track in enumerate(self.tracks):
                 # Interpolierte Positionen
                 lats = [(1-alpha)*p[0] + alpha*p[3] for p in track]
                 lons = [(1-alpha)*p[1] + alpha*x_targets[i] for p in track]
-                ax.plot(lons, lats, color=orange_bgr, linewidth=4)
+                ax.plot(lons, lats, color=orange_bgr, linewidth=linewidth)
                 # Startmarker
                 ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=10)
             ax.axis("off")
