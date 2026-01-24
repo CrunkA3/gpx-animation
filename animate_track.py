@@ -105,7 +105,7 @@ def create_animation(
 
 # Hauptprogramm
 if __name__ == "__main__":
-    gpx_file = "gpx_files/22_31.gpx"
+    gpx_file = "gpx_files/24_31.gpx"
 
     print("Parse GPX-Datei...")
     track_points = parse_gpx(gpx_file)
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     frame_skip = 10  # Jeder 10. Frame wird gespeichert
     create_animation(
         track_points,
-        output_file="track_animation.gif",
+        output_file="output/track_animation.gif",
         duration=5,
         frame_skip=frame_skip,
         line_color="#FC4C02",
