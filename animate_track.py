@@ -12,7 +12,7 @@ from gpx_utils import parse_gpx
 # Animation erstellen
 def create_animation(
     points,
-    output_file="track_animation.gif",
+    output_file="output/track_animation.gif",
     duration=5,
     frame_skip=1,
     line_color="b",
@@ -99,13 +99,13 @@ def create_animation(
         )
         print(f"Animation gespeichert: {output_file}")
         # Letzten Frame als PNG speichern
-        frames[-1].save("last_frame.png")
-        print("Letzter Frame gespeichert: last_frame.png")
+        frames[-1].save("output/last_frame.png")
+        print("Letzter Frame gespeichert: output/last_frame.png")
 
 
 # Hauptprogramm
 if __name__ == "__main__":
-    gpx_file = "gpx_files/24_31.gpx"
+    gpx_file = "gpx_files/24_32.gpx"
 
     print("Parse GPX-Datei...")
     track_points = parse_gpx(gpx_file)
