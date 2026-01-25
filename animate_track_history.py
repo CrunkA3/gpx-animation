@@ -14,6 +14,8 @@ import matplotlib.animation as animation
 from matplotlib.patches import Rectangle
 
 
+MARKERSIZE = 20
+
 class GPXTrackAnimator:
     """GPX Track Animator Klasse zum Erstellen von Animationen aus GPX-Dateien."""
 
@@ -87,6 +89,8 @@ class GPXTrackAnimator:
 
         # Set up figure and axis
         fig, ax = plt.subplots(figsize=(56, 56), dpi=100)
+        fig.patch.set_facecolor('black')
+        ax.set_facecolor('black')
 
         # Compute bounding box for all tracks
         all_lats = np.concatenate([[p[0] for p in track] for track in self.tracks])
@@ -177,8 +181,8 @@ class GPXTrackAnimator:
 
 
 
-        # Einblend-Animation: Tracks erscheinen nacheinander in den ersten 3 Sekunden
-        fadein_frames = int(self.fps * 3)
+        # Einblend-Animation: Tracks erscheinen nacheinander in den ersten 5 Sekunden
+        fadein_frames = int(self.fps * 5)
         for frame in range(fadein_frames):
             ax.clear()
             ax.set_xlim(min_lon, max_lon)
@@ -190,11 +194,11 @@ class GPXTrackAnimator:
                 lats = [p[0] for p in track]
                 lons = [p[1] for p in track]
                 ax.plot(lons, lats, color=orange_bgr, linewidth=4)
-                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=10)
+                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=MARKERSIZE)
 
             # Zeige den aktuellen Index als Text, wenn ein neuer Track erscheint
             if num_visible > 0:
-                ax.text(0.01, 0.98, f"Tag {num_visible}", transform=ax.transAxes, fontsize=72, color="black", va="top", ha="left", bbox=dict(facecolor='white', alpha=0.7, edgecolor='none', boxstyle='round,pad=0.3'))
+                ax.text(0.01, 0.98, f"Tag {num_visible}", transform=ax.transAxes, fontsize=144, color="white", va="top", ha="left", bbox=dict(facecolor='black', alpha=0.7, edgecolor='none', boxstyle='round,pad=0.3'))
 
 
             ax.axis("off")
@@ -227,7 +231,7 @@ class GPXTrackAnimator:
                 lons = [(1-alpha)*p[1] + alpha*x_targets[i] for p in track]
                 ax.plot(lons, lats, color=orange_bgr, linewidth=linewidth)
                 # Startmarker
-                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=10)
+                ax.plot(lons[0], lats[0], marker="o", color=orange_bgr, markersize=MARKERSIZE)
             ax.axis("off")
             fig.canvas.draw()
             img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
