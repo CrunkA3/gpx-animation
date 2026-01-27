@@ -42,3 +42,4 @@ cython_debug/
 output/*.png
 output/*.mp4
 output/*.gif
+output/*.svg
