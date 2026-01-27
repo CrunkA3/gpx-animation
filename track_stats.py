@@ -192,7 +192,7 @@ def calculate_track_stats(points):
 
 # Hauptprogramm
 if __name__ == "__main__":
-    gpx_file = "gpx_files/25_31.gpx"
+    gpx_file = "gpx_files/27_31.gpx"
 
     print("Parse GPX-Datei...")
     track_points = parse_gpx(gpx_file)
