@@ -224,7 +224,7 @@ class GPXTrackAnimator:
             ax.set_ylim(min_lat, max_lat)
             ax.set_aspect("equal")
             alpha = (step + 1) / straighten_steps
-            linewidth = 4 + 4 * alpha  # von 4 auf 8
+            linewidth = 4 + 12 * alpha  # von 4 auf 16 erhöhen
             for i, track in enumerate(self.tracks):
                 # Interpolierte Positionen
                 lats = [(1-alpha)*p[0] + alpha*p[3] for p in track]
